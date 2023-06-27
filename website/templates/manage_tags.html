@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %} Správa tagů {% endblock %}
+{% block content %}
+<h1 align="left">Správa tagů</h1>
+<br />
+
+<h3 align="left">Vytvoř tag</h3>
+<form method="POST" class="input-group mb-3">
+    <label class="input-group-text" for="inputGroupSelect01">Jméno tagu</label>
+    <input type="text" class="form-control w-5" name="new-tag-name">
+    <label class="input-group-text" for="inputGroupSelect01">Popis tagu</label>
+    <input type="text" class="form-control w-50" name="new-tag-description">
+    <button class="btn btn-outline-secondary" type="submit" id="create-tag-button">Vytvořit</button>
+</form>
+
+<br />
+<br />
+<br />
+
+<h3 align="left">Přehled tagů</h3>
+<table class="table ">
+    <thead>
+        <tr>
+            <!-- <th scope="col">Id</th> -->
+            <th scope="col">Tag</th>
+            <th scope="col">Popis</th>
+            <th scope="col">Kdo vytvořil</th>
+            <th scope="col">Čas vytvoření</th>
+            <th scope="col">Smazat</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for (tag, user) in tags %}
+        <tr>
+            <th scope="row">{{ tag.id_string }}</th>
+            <!-- <td>{{ tag.id_string }}</td> -->
+            <td>{{ tag.description }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ tag.created_date }}</td>
+            <td><button type="button" class="close" onClick="deleteTag({{ tag.id }})">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
-from .models import Note
+from .models import Note, Tag, User
 from . import db
 import json
 
@@ -23,15 +23,31 @@ def home():
 
     return render_template("home.html", user=current_user)
 
+@views.route('/manage-tags', methods=['GET', 'POST'])
+@login_required
+def manageTags():
+    if request.method == 'POST':
+        tag_name = request.form.get('new-tag-name') #Gets the note from the HTML 
+        new_tag_description = request.form.get('new-tag-description') #Gets the note from the HTML 
 
-@views.route('/delete-note', methods=['POST'])
-def delete_note():  
-    note = json.loads(request.data) # this function expects a JSON from the INDEX.js file 
-    noteId = note['noteId']
-    note = Note.query.get(noteId)
-    if note:
-        if note.user_id == current_user.id:
-            db.session.delete(note)
+        old_tag = Tag.query.filter_by(id_string=tag_name).first()
+        if old_tag:
+            flash(f'Tag {tag_name} už existuje.', category='error')
+        elif len(tag_name) > 1:
+            db.session.add(Tag(id_string = tag_name, description = new_tag_description, created_user=current_user.id))
             db.session.commit()
+            flash('Nový tag vytvořen!', category='success')
+
+    tags = db.session.query(Tag, User).order_by(Tag.id_string).join(User, Tag.created_user==User.id).all()
+    return render_template("manage_tags.html", user=current_user, tags=tags)
+
+
+@views.route('/delete-tag', methods=['POST'])
+def delete_tag():  
+    tagId = json.loads(request.data)['tagId']
+    tag = Tag.query.get(tagId)
+    if tag:
+        db.session.delete(tag)
+        db.session.commit()
 
     return jsonify({})

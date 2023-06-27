@@ -9,6 +9,12 @@ class Note(db.Model):
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_string = db.Column(db.String(100))
+    description = db.Column(db.String(300))
+    created_user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_date = db.Column(db.DateTime(timezone=True), default=func.now())
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

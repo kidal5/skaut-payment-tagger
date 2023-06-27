@@ -1,8 +1,8 @@
-function deleteNote(noteId) {
-  fetch("/delete-note", {
+function deleteTag(tagId) {
+  fetch("/delete-tag", {
     method: "POST",
-    body: JSON.stringify({ noteId: noteId }),
+    body: JSON.stringify({ tagId: tagId }),
   }).then((_res) => {
-    window.location.href = "/";
+    window.location.href = "/manage-tags";
   });
 }
